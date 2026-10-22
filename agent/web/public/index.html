@@ -1,0 +1,337 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Home Concierge (demo)</title>
+<style>
+  :root {
+    --accent: #d7263d;
+    --accent-dark: #a81b2e;
+    --accent-soft: #fdecee;
+    --ink: #1d2433;
+    --muted: #667085;
+    --line: #e6e8ec;
+    --bg: #f7f7f8;
+    --card: #ffffff;
+    --ok: #127a4a;
+    --radius: 14px;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  body {
+    font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans Arabic", sans-serif;
+    color: var(--ink); background: var(--bg);
+    display: flex; flex-direction: column;
+  }
+  .banner {
+    background: var(--ink); color: #fff; font-size: 13px; text-align: center; padding: 7px 12px;
+  }
+  .banner strong { color: #ffb3bd; }
+  header {
+    background: var(--card); border-bottom: 1px solid var(--line);
+    padding: 14px 20px; display: flex; align-items: center; gap: 12px;
+  }
+  .mark {
+    width: 34px; height: 34px; border-radius: 10px; background: var(--accent);
+    display: grid; place-items: center; color: #fff; font-weight: 700;
+  }
+  .mark svg { width: 20px; height: 20px; }
+  header h1 { font-size: 17px; margin: 0; }
+  header p { margin: 0; font-size: 12px; color: var(--muted); }
+  .pill { margin-left: auto; font-size: 12px; padding: 4px 10px; border-radius: 999px; background: var(--accent-soft); color: var(--accent-dark); }
+  .pill.unsafe { background: #fff4cc; color: #8a5a00; }
+
+  main { flex: 1; overflow-y: auto; padding: 20px; }
+  .thread { max-width: 760px; margin: 0 auto; display: flex; flex-direction: column; gap: 14px; }
+  .msg { max-width: 85%; padding: 11px 14px; border-radius: var(--radius); line-height: 1.5; font-size: 15px; white-space: normal; }
+  .msg.user { align-self: flex-end; background: var(--accent); color: #fff; border-bottom-right-radius: 4px; }
+  .msg.bot { align-self: flex-start; background: var(--card); border: 1px solid var(--line); border-bottom-left-radius: 4px; }
+  .msg[dir="rtl"] { text-align: right; }
+  .msg ul { margin: 6px 0; padding-inline-start: 20px; }
+  .msg p { margin: 0 0 6px; }
+  .msg p:last-child { margin-bottom: 0; }
+
+  .tools { display: flex; flex-wrap: wrap; gap: 6px; align-self: flex-start; }
+  .chip { font: 12px ui-monospace, SFMono-Regular, Menlo, monospace; padding: 3px 8px; border-radius: 6px; background: #eef0f3; color: var(--muted); }
+  .chip.done { color: var(--ok); }
+  .chip.denied { background: #fde2e5; color: var(--accent-dark); font-weight: 600; }
+
+  .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 12px; width: 100%; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; font-size: 13px; }
+  .card img { width: 100%; height: 118px; object-fit: cover; display: block; background: #eee; }
+  .card .body { padding: 10px 12px; }
+  .card .price { font-weight: 700; font-size: 15px; }
+  .card .price small { font-weight: 400; color: var(--muted); }
+  .card .title { margin: 4px 0; }
+  .card .meta { color: var(--muted); }
+  .card .tags { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+  .tag { font-size: 11px; padding: 2px 7px; border-radius: 999px; border: 1px solid var(--line); color: var(--muted); }
+  .tag.verified { border-color: #b7e4cc; color: var(--ok); }
+  .tag.fake { border-color: #ffd0d6; color: var(--accent-dark); }
+
+  .approval { align-self: stretch; background: #fff; border: 2px solid var(--accent); border-radius: var(--radius); padding: 14px 16px; }
+  .approval h3 { margin: 0 0 6px; font-size: 14px; color: var(--accent-dark); }
+  .approval p { margin: 0 0 12px; font-size: 14px; }
+  .approval .row { display: flex; gap: 8px; }
+
+  button { font: inherit; border-radius: 10px; border: 1px solid var(--line); background: #fff; padding: 9px 14px; cursor: pointer; }
+  button.primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+  button.primary:hover { background: var(--accent-dark); }
+  button:disabled { opacity: .5; cursor: default; }
+
+  .suggestions { max-width: 760px; margin: 0 auto 10px; display: flex; gap: 8px; flex-wrap: wrap; }
+  .suggestions button { font-size: 13px; padding: 6px 11px; border-radius: 999px; }
+  footer { background: var(--card); border-top: 1px solid var(--line); padding: 12px 20px; }
+  form { max-width: 760px; margin: 0 auto; display: flex; gap: 8px; }
+  textarea {
+    flex: 1; resize: none; font: inherit; border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; height: 46px;
+  }
+  textarea:focus { outline: 2px solid var(--accent-soft); border-color: var(--accent); }
+  .typing { color: var(--muted); font-size: 13px; align-self: flex-start; }
+  .trace { font: 11px ui-monospace, monospace; color: #a0a6b1; align-self: flex-start; }
+  .layout { flex: 1; display: flex; min-height: 0; }
+  .chat { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+  aside {
+    width: 280px; flex-shrink: 0; background: var(--card); border-left: 1px solid var(--line);
+    padding: 16px; overflow-y: auto; font-size: 13px;
+  }
+  aside h2 { font-size: 13px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); margin: 0 0 4px; }
+  aside .sub { font-size: 11px; color: var(--muted); margin-bottom: 12px; }
+  aside dl { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 6px 10px; }
+  aside dt { color: var(--muted); }
+  aside dd { margin: 0; }
+  aside .empty { color: var(--muted); font-style: italic; }
+  aside ul { margin: 4px 0 0; padding-left: 16px; }
+  aside .db { margin-top: 14px; padding: 8px 10px; border-radius: 8px; background: #f3f4f6; font: 11px ui-monospace, monospace; color: var(--muted); }
+  .flash { animation: flash 1.2s ease; }
+  @keyframes flash { from { background: var(--accent-soft); } to { background: var(--card); } }
+  header .actions { margin-left: 12px; }
+  header .actions button { font-size: 13px; padding: 6px 10px; }
+  @media (max-width: 860px) { aside { display: none; } }
+</style>
+</head>
+<body>
+  <div class="banner"><strong>DEMO</strong> · All listings, prices, transactions and agents are <strong>synthetic</strong>. Not affiliated with any property portal. Estimates are not financial advice.</div>
+  <header>
+    <div class="mark" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-5h4v5"/></svg>
+    </div>
+    <div>
+      <h1>Home Concierge (demo)</h1>
+      <p>Find a home, check prices, book a viewing · English / العربية</p>
+    </div>
+    <span id="mode" class="pill">strict guardrails</span>
+    <div class="actions"><button id="newchat" title="Start a new conversation: the concierge should remember you">＋ New conversation</button></div>
+  </header>
+
+  <div class="layout"><div class="chat">
+  <main id="scroll"><div class="thread" id="thread"></div></main>
+
+  <div class="suggestions" id="suggestions">
+    <button>Looking to rent a 2BR in Dubai Marina, budget 160k</button>
+    <button>Is AED 1.4M fair for a 1BR in Dubai Marina?</button>
+    <button>What would the monthly payment be on AED 1.4M?</button>
+    <button dir="rtl">أبحث عن شقة غرفتين للإيجار في قرية جميرا الدائرية</button>
+  </div>
+  <footer>
+    <form id="form">
+      <textarea id="input" placeholder="Ask about homes, prices or viewings…" dir="auto" autocomplete="off"></textarea>
+      <button class="primary" id="send" type="submit">Send</button>
+    </form>
+  </footer>
+  </div>
+  <aside id="memory">
+    <h2>What I remember</h2>
+    <div class="sub">Long-term memory · across conversations</div>
+    <div id="memory-body" class="empty">Nothing yet.</div>
+    <div class="db">knowledge store: <b>memory</b> (postgres)<br/>declared in astropods.yml</div>
+  </aside>
+  </div>
+
+<script>
+const threadEl = document.getElementById('thread');
+const scrollEl = document.getElementById('scroll');
+const form = document.getElementById('form');
+const input = document.getElementById('input');
+const sendBtn = document.getElementById('send');
+// Long-lived visitor id (local dev stand-in for the Astropods user; ignored when signed in).
+const visitorId = localStorage.visitorId || (localStorage.visitorId = crypto.randomUUID());
+// One thread per conversation; "New conversation" starts another, memory carries over.
+let threadId = sessionStorage.threadId || (sessionStorage.threadId = crypto.randomUUID());
+let busy = false;
+
+fetch('/api/config').then(r => r.json()).then(c => {
+  if (c.instruction_set !== 'strict') {
+    const m = document.getElementById('mode');
+    m.textContent = 'lenient-UNSAFE (eval demo)';
+    m.classList.add('unsafe');
+  }
+}).catch(() => {});
+
+const isArabic = s => /[؀-ۿ]/.test(s);
+const esc = s => s.replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+// Minimal markdown: paragraphs, bullet lists, **bold**. Input is escaped first.
+function md(text) {
+  const lines = esc(text).split('\n');
+  let html = '', inList = false;
+  for (const raw of lines) {
+    const line = raw.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+    const li = /^\s*(?:[-*•]|\d+\.)\s+(.*)$/.exec(line);
+    if (li) { if (!inList) { html += '<ul>'; inList = true; } html += `<li>${li[1]}</li>`; continue; }
+    if (inList) { html += '</ul>'; inList = false; }
+    if (line.trim()) html += `<p>${line}</p>`;
+  }
+  return html + (inList ? '</ul>' : '');
+}
+
+function add(el) { threadEl.appendChild(el); scrollEl.scrollTop = scrollEl.scrollHeight; return el; }
+function div(cls, html) { const d = document.createElement('div'); d.className = cls; if (html != null) d.innerHTML = html; return d; }
+
+function money(n) { return 'AED ' + Number(n).toLocaleString('en-US'); }
+function renderCards(listings) {
+  if (!listings || !listings.length) return;
+  const wrap = div('cards');
+  for (const l of listings) {
+    const beds = l.beds === 0 ? 'Studio' : `${l.beds} bed`;
+    wrap.appendChild(div('card', `
+      <img src="${esc(l.image_url)}" alt="" loading="lazy" />
+      <div class="body">
+        <div class="price">${money(l.price_aed)} ${l.purpose === 'rent' ? '<small>/ year</small>' : ''}</div>
+        <div class="title">${esc(l.title)}</div>
+        <div class="meta">${beds} · ${l.baths} bath · ${Number(l.size_sqft).toLocaleString()} sqft</div>
+        <div class="meta">${esc(l.id)} · ${esc(l.furnished)}</div>
+        <div class="tags">
+          ${l.verified ? '<span class="tag verified">✓ verified</span>' : '<span class="tag">unverified</span>'}
+          <span class="tag fake">synthetic</span>
+        </div>
+      </div>`));
+  }
+  add(wrap);
+}
+
+async function stream(url, payload) {
+  busy = true; sendBtn.disabled = true;
+  const typing = add(div('typing', 'Thinking…'));
+  let bot = null, text = '', tools = null;
+  const chips = new Map();
+  try {
+    const res = await fetch(url, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(payload) });
+    const reader = res.body.getReader();
+    const dec = new TextDecoder();
+    let buf = '';
+    for (;;) {
+      const { value, done } = await reader.read();
+      if (done) break;
+      buf += dec.decode(value, { stream: true });
+      let i;
+      while ((i = buf.indexOf('\n\n')) >= 0) {
+        const block = buf.slice(0, i); buf = buf.slice(i + 2);
+        const event = /^event: (.*)$/m.exec(block)?.[1];
+        const data = JSON.parse(/^data: (.*)$/m.exec(block)?.[1] || '{}');
+        if (event === 'text') {
+          if (!bot) { bot = add(div('msg bot')); text = ''; }
+          text += data.text;
+          bot.innerHTML = md(text);
+          bot.dir = isArabic(text) ? 'rtl' : 'ltr';
+          scrollEl.scrollTop = scrollEl.scrollHeight;
+        } else if (event === 'tool') {
+          if (data.phase === 'start') {
+            bot = null; // text after a tool call starts a new bubble
+            if (!tools) tools = add(div('tools'));
+            const c = div('chip', `⚙ ${esc(data.name)}`);
+            chips.set(data.toolCallId, c); tools.appendChild(c);
+          } else {
+            const c = chips.get(data.toolCallId);
+            if (c) {
+              c.className = 'chip ' + (data.denied ? 'denied' : 'done');
+              c.textContent = data.denied ? `⛔ ${data.name}: SCOPE_DENIED` : `✓ ${data.name}`;
+            }
+            if (data.listings) { renderCards(data.listings); tools = null; }
+          }
+        } else if (event === 'approval') {
+          renderApproval(data);
+        } else if (event === 'error') {
+          add(div('msg bot', `<p>⚠ ${esc(data.message)}</p>`));
+        } else if (event === 'trace' && data.traceId) {
+          add(div('trace', `trace ${esc(data.traceId)}`));
+        }
+      }
+    }
+  } catch (e) {
+    add(div('msg bot', '<p>⚠ Connection lost. Please try again.</p>'));
+  } finally {
+    typing.remove(); busy = false; sendBtn.disabled = false; input.focus();
+    refreshMemory(true);
+  }
+}
+
+const LABELS = { first_name: 'Name', intent: 'Intent', budget_aed: 'Budget', beds: 'Bedrooms', communities: 'Areas',
+  property_types: 'Types', timeline: 'Timeline', financing: 'Financing', household: 'Household', pets: 'Pets', must_haves: 'Must-haves', notes: 'Notes' };
+let lastMemory = '';
+async function refreshMemory(highlight) {
+  let m;
+  try { m = await (await fetch('/api/profile', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ visitorId }) })).json(); }
+  catch { return; }
+  const body = document.getElementById('memory-body');
+  const key = JSON.stringify(m);
+  if (!m.found && !(m.upcoming_viewings || []).length) {
+    body.className = 'empty';
+    body.textContent = m.reason === 'anonymous' ? 'Anonymous session: nothing is remembered.' : 'Nothing yet. Tell me what you are looking for.';
+  } else {
+    body.className = '';
+    const p = m.profile || {};
+    const fmt = (k, v) => k === 'budget_aed' ? money(v) : Array.isArray(v) ? v.join(', ') : typeof v === 'boolean' ? (v ? 'yes' : 'no') : v;
+    const rows = Object.keys(LABELS).filter(k => p[k] != null && !(Array.isArray(p[k]) && !p[k].length))
+      .map(k => `<dt>${LABELS[k]}</dt><dd>${esc(String(fmt(k, p[k])))}</dd>`).join('');
+    const list = (title, items) => items && items.length ? `<p style="margin:12px 0 0"><b>${title}</b></p><ul>${items.join('')}</ul>` : '';
+    body.innerHTML = (rows ? `<dl>${rows}</dl>` : '')
+      + list('Shortlist', (m.shortlist || []).map(s => `<li>${esc(s.id)} · ${esc(s.title)}</li>`))
+      + list('Viewings', (m.upcoming_viewings || []).map(v => `<li>${esc(v.listing_id)} · ${esc(v.slot.replace('T', ' ').replace(':00+04:00', ':00'))}</li>`))
+      + list('Handoffs', (m.handoffs || []).map(h => `<li>${esc(h.listing_id)} (${esc(h.id)})</li>`))
+      + (m.conversations_seen ? `<p class="sub" style="margin-top:12px">Seen in ${m.conversations_seen} conversation(s)</p>` : '');
+  }
+  if (highlight && key !== lastMemory) { body.classList.remove('flash'); void body.offsetWidth; body.classList.add('flash'); }
+  lastMemory = key;
+}
+refreshMemory(false);
+
+document.getElementById('newchat').onclick = () => {
+  if (busy) return;
+  threadId = sessionStorage.threadId = crypto.randomUUID();
+  threadEl.innerHTML = '';
+  document.getElementById('suggestions').style.display = '';
+  add(div('trace', 'New conversation started · conversation history cleared, long-term memory kept'));
+  input.focus();
+};
+
+function renderApproval(a) {
+  const box = add(div('approval', `
+    <h3>Human approval required</h3>
+    <p>${esc(a.message)}</p>
+    <div class="row"><button class="primary">Approve handoff</button><button>Decline</button></div>`));
+  const [yes, no] = box.querySelectorAll('button');
+  const decide = approve => {
+    yes.disabled = no.disabled = true;
+    box.querySelector('h3').textContent = approve ? 'Approved ✓' : 'Declined';
+    stream('/api/approve', { threadId, visitorId, runId: a.runId, toolCallId: a.toolCallId, approve });
+  };
+  yes.onclick = () => decide(true);
+  no.onclick = () => decide(false);
+}
+
+function send(text) {
+  if (busy || !text.trim()) return;
+  document.getElementById('suggestions').style.display = 'none';
+  const m = add(div('msg user')); m.textContent = text; m.dir = isArabic(text) ? 'rtl' : 'ltr';
+  input.value = '';
+  stream('/api/chat', { threadId, visitorId, message: text });
+}
+
+form.onsubmit = e => { e.preventDefault(); send(input.value); };
+input.onkeydown = e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(input.value); } };
+document.querySelectorAll('#suggestions button').forEach(b => b.onclick = () => send(b.textContent));
+</script>
+</body>
+</html>

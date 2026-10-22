@@ -1,0 +1,31 @@
+{
+  "name": "home-concierge",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Home Concierge (demo): lead-to-viewing assistant for UAE home-seekers on Astropods. Synthetic data.",
+  "scripts": {
+    "start": "bun agent/index.ts",
+    "dev": "bun --watch agent/index.ts",
+    "data:generate": "bun scripts/generate-data.ts",
+    "test": "bun test",
+    "typecheck": "tsc --noEmit",
+    "conversations": "bun scripts/run-conversations.ts",
+    "test:memory": "bash scripts/test-memory.sh"
+  },
+  "main": "./agent/index.ts",
+  "dependencies": {
+    "@ai-sdk/openai": "^2.0.0",
+    "@astropods/adapter-core": "^0.14.0",
+    "@astropods/adapter-mastra": "^0.9.0",
+    "@mastra/core": "^1.64.0",
+    "@mastra/memory": "^1.28.2",
+    "@mastra/pg": "^1.32.0",
+    "pg": "^8.23.1",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.1.14",
+    "@types/pg": "^8.23.1",
+    "typescript": "^5.9.3"
+  }
+}

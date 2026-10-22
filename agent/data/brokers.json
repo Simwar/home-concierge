@@ -1,0 +1,139 @@
+{
+ "_notice": "SYNTHETIC DEMO DATA. Not real listings, prices, transactions or people. Do not use for decisions.",
+ "generated_with_seed": 20261022,
+ "brokers": [
+  {
+   "agent_id": "AG-101",
+   "name": "Aisha Demo-Haddad",
+   "agency": "Example Realty (demo)",
+   "phone": "+971 50 555 1000",
+   "email": "aisha.0@example.com",
+   "brn": "FAKE-BRN-40000",
+   "languages": [
+    "English",
+    "Arabic"
+   ],
+   "synthetic": true
+  },
+  {
+   "agent_id": "AG-102",
+   "name": "Omar Demo-Khan",
+   "agency": "Sample Homes LLC (demo)",
+   "phone": "+971 50 555 1037",
+   "email": "omar.1@example.com",
+   "brn": "FAKE-BRN-40113",
+   "languages": [
+    "English",
+    "Hindi"
+   ],
+   "synthetic": true
+  },
+  {
+   "agent_id": "AG-103",
+   "name": "Priya Demo-Rahman",
+   "agency": "Placeholder Properties (demo)",
+   "phone": "+971 50 555 1074",
+   "email": "priya.2@example.com",
+   "brn": "FAKE-BRN-40226",
+   "languages": [
+    "English",
+    "Arabic",
+    "French"
+   ],
+   "synthetic": true
+  },
+  {
+   "agent_id": "AG-104",
+   "name": "James Demo-Smith",
+   "agency": "Example Realty (demo)",
+   "phone": "+971 50 555 1111",
+   "email": "james.3@example.com",
+   "brn": "FAKE-BRN-40339",
+   "languages": [
+    "English",
+    "Arabic"
+   ],
+   "synthetic": true
+  },
+  {
+   "agent_id": "AG-105",
+   "name": "Fatima Demo-Nasser",
+   "agency": "Sample Homes LLC (demo)",
+   "phone": "+971 50 555 1148",
+   "email": "fatima.4@example.com",
+   "brn": "FAKE-BRN-40452",
+   "languages": [
+    "English",
+    "Hindi"
+   ],
+   "synthetic": true
+  },
+  {
+   "agent_id": "AG-106",
+   "name": "Karim Demo-Costa",
+   "agency": "Placeholder Properties (demo)",
+   "phone": "+971 50 555 1185",
+   "email": "karim.5@example.com",
+   "brn": "FAKE-BRN-40565",
+   "languages": [
+    "English",
+    "Arabic",
+    "French"
+   ],
+   "synthetic": true
+  },
+  {
+   "agent_id": "AG-107",
+   "name": "Elena Demo-Ali",
+   "agency": "Example Realty (demo)",
+   "phone": "+971 50 555 1222",
+   "email": "elena.6@example.com",
+   "brn": "FAKE-BRN-40678",
+   "languages": [
+    "English",
+    "Arabic"
+   ],
+   "synthetic": true
+  },
+  {
+   "agent_id": "AG-108",
+   "name": "Yousef Demo-Murphy",
+   "agency": "Sample Homes LLC (demo)",
+   "phone": "+971 50 555 1259",
+   "email": "yousef.7@example.com",
+   "brn": "FAKE-BRN-40791",
+   "languages": [
+    "English",
+    "Hindi"
+   ],
+   "synthetic": true
+  },
+  {
+   "agent_id": "AG-109",
+   "name": "Sara Demo-Haddad",
+   "agency": "Placeholder Properties (demo)",
+   "phone": "+971 50 555 1296",
+   "email": "sara.8@example.com",
+   "brn": "FAKE-BRN-40904",
+   "languages": [
+    "English",
+    "Arabic",
+    "French"
+   ],
+   "synthetic": true
+  },
+  {
+   "agent_id": "AG-110",
+   "name": "Daniel Demo-Khan",
+   "agency": "Example Realty (demo)",
+   "phone": "+971 50 555 1333",
+   "email": "daniel.9@example.com",
+   "brn": "FAKE-BRN-41017",
+   "languages": [
+    "English",
+    "Arabic"
+   ],
+   "synthetic": true
+  }
+ ]
+}

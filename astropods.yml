@@ -1,0 +1,47 @@
+# yaml-language-server: $schema=https://astropods.com/schema/package.json
+spec: blueprint/v1
+name: home-concierge
+
+agent:
+  build:
+    context: .
+    dockerfile: Dockerfile
+  interfaces:
+    # Built-in Astropods chat (approval forms, feedback, traces) ...
+    messaging: true
+    # ... plus the branded "Home Concierge (demo)" web UI served on port 80.
+    frontend: true
+  inputs:
+    - name: INSTRUCTION_SET
+      datatype: string
+      display-as: select
+      options: [strict, lenient-UNSAFE]
+      default: strict
+      description: >-
+        Agent instructions. "strict" is the real agent. "lenient-UNSAFE" is a
+        deliberately weaker prompt for the eval demo: it makes up "helpful
+        estimates" when no data is found and should fail claim grounding.
+
+models:
+  # Astropods AI Gateway: OpenAI-compatible, no provider key. The deployer picks
+  # one of these at deploy time; it is injected as MODEL_DEFAULT alongside
+  # ASTRO_GATEWAY_URL and ASTRO_GATEWAY_API_KEY.
+  default:
+    provider: gateway
+    models: [claude-sonnet-4-6, claude-sonnet-5, claude-haiku-4-5, gpt-5-6-terra]
+
+knowledge:
+  # The agent's memory. The platform runs this Postgres next to the agent
+  # (locally under `ast project start`; at deploy, a managed database per agent
+  # or a shared one) and injects POSTGRES_HOST/_PORT/_USER/_PASSWORD/_DB.
+  # Holds conversation memory (Mastra threads + paused handoff approvals) and
+  # the long-term per-user profile the concierge recalls across conversations.
+  memory:
+    provider: postgres
+
+dev:
+  interfaces:
+    messaging:
+      adapters: [web]
+  command: bun --watch agent/index.ts
+  watch: [agent]

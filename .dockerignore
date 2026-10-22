@@ -1,0 +1,14 @@
+.git
+.gitignore
+.env
+.env.*
+.ast/
+node_modules/
+dist/
+.idea/
+.vscode/
+*.md
+*.log
+.data/
+tests/
+evaluation/
