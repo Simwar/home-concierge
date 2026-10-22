@@ -10,6 +10,7 @@ tags:
   - demo
 authors:
   - name: Simon Guerrier
+repository: "github:Simwar/home-concierge"
 capabilities:
   - Qualifies home-seekers on intent, budget, bedrooms, communities, timeline and financing
   - Searches a synthetic listings inventory for Dubai, Abu Dhabi and Sharjah
