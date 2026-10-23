@@ -30,7 +30,12 @@ const storage = new PostgresStore({ id: 'concierge-memory', pool });
 
 export const agent = new Agent({
   id: 'home-concierge',
-  name: 'Home Concierge',
+  // serve() exports traces with service.name = agent.name. The platform's
+  // per-agent usage rollup (traces, tokens, model cost) only counts traces whose
+  // service.name matches the agent's blueprint name, which it injects as
+  // ASTRO_AGENT_NAME (docs: monitor-agents). A display name like "Home Concierge"
+  // still shows per-trace cost, but the agent's usage reads 0.
+  name: process.env.ASTRO_AGENT_NAME ?? 'home-concierge',
   description: 'Lead-to-viewing concierge for UAE home-seekers (demo, synthetic data).',
   instructions: () => getInstructions(),
   // .chat() = Chat Completions. The gateway's Responses API mishandles Claude tool results.
